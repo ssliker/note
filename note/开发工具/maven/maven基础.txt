@@ -1,47 +1,30 @@
-1.关于maven:
-    专用于java项目的构建工具，主要完成两个方面的功能：
-        1.用来管理项目依赖的jar包；
-        2.自动完成项目打包和构建；
+1.关于maven:专用于java项目的管理工具，主要完成两个方面的功能：
+    1.管理项目依赖的jar包；
+    2.项目打包和构建；
 
 2.maven管理项目的方式：
-    1.maven通过pom.xml来配置项目的依赖、父子关系、构建目标等，并通过提供的生命周期命令来构建项目；
-    2.pom是指项目对象模型，是一个xml文件；
+    1.maven通过pom.xml来配置项目的依赖、父子关系、构建目标；
+    2.maven提供了完整的生命周期来进行项目的打包构建；
 
-3.关于依赖管理：
-    1.默认情况下是需要手动将jar包复制到项目中，才能使用jar包；缺点在于：
-        1.每次创建项目都需要手动将jar包复制中，比较繁琐；
-        2.多个项目中存在多个jar包，导致jar包比较臃肿；
-        3.jar包之间的依赖关系需要手动管理，容易出现jar包缺失以及版本冲突的问题；
+3.maven使用优劣对比：
+    1.对于不使用maven的情况：
+        1.每次创建项目都需要手动将jar包复制中，比较繁琐和臃肿；
+        2.jar包的版本管理以及jar包的依赖关系都需要手动维护，容易出现jar包缺失以及版本冲突的问题；
+        3.项目结构没有约束规范，不能很方便的进行统一的项目管理；
+        4.项目构建时需要手动划分目录、手动编译打包；
 
-    2.使用maven时，maven有仓库的概念，只需要设置jar包在仓库的坐标即可，有以下优点：
-        1.简化jar包引用，只需要在pom.xml中配置jar包的坐标即可；
-        2.多个项目可以共享同一个jar包，避免反复复制jar包；
-        3.自动管理jar包依赖关系，避免jar包缺失和版本冲突；
-        4.支持父子继承关系，统一jar包版本，方便项目开发；
+    2.使用maven时：
+        1.maven有仓库的概念，引用jar包时只需要在pom.xml中设置jar包在仓库的坐标即可，大大简化项目对jar包的引入过程；
+        2.能够自动进行jar包的版本管理和依赖关系管理，能够尽最大程度避免jar包的缺失和版本冲突；
+        3.基于约定大于配置的理念设计，有统一的项目结构规范，支持父子项目继承关系，方便项目管理；
+        4.提供构建生命周期，能够自动进行项目编译打包；
 
-4.关于项目构建：
-    1.没有使用自动构建工具时需要手动划分目录结构，手动执行清理、编译等构建过程；比较繁琐
-    2.使用maven之后，maven提供了一套完整的项目构建生命周期，能够很方便的进行项目的编译打包；
-
-5.maven的安装和配置：
+4.maven的安装和配置：
     1.下载：https://maven.apache.org/download.cgi
     2.解压至目录
     3.配置环境变量，在Path路径中添加G:\respostry\maven\apache-maven-3.5.4\bin;
 
-6.maven项目目录结构：
-    在maven项目中，项目的目录结构是约定好的，不能改变，即约定大于配置；
-    1.项目根目录
-        |--pom.xml：进行项目管理的配置文件；包括项目的坐标、项目的父子关系、依赖、构建目标等信息；
-        |--项目名.iml
-        |--src
-            |--main:主目录
-                |--java：java源文件
-                |--resources：配置文件(xml、properties、yml)
-            |--test:测试目录
-                |--java：java源文件
-                |--resource：测试资源文件
-
-7.maven中的几种操作：
+5.maven中的几种构建操作：
     1.清理(clean)：
         1.清理命令；删除之前编译的结果，为下一次编译做准备；
         2.会清理掉项目目录下target目录及其子目录；
@@ -64,23 +47,54 @@
     7.测试(test):对项目的关键节点进行测试，保证项目在迭代开发过程中关键节点的正确性；
     8.部署(deploy)：将war包部署搭配tomcat中；
 
+6.关于maven仓库：   
+    1.仓库类型：
+        1.maven仓库分为本地仓库和远程仓库，区别在于是需要通过网络访问还是通过文件系统访问；
+        2.远程仓库又分为私有仓库和公共仓库，区别在于仓库是只对自己可用还是对所有人可用；
+    2.本地仓库配置：
+        1.在maven安装目录中找到conf目录；
+        2.打开settings.xml，找到<localRepository>G:\respostry\maven\res</localRepository>，并将其值改为本地仓库地址；
+        3.默认情况下的本地仓库在C:\Users\Administrator.USER-20181220ZV\.m2\repository位置；
+    3.私有仓库/远程仓库配置：
+        找到mirrors标签，按照如下方式配置即可：
+        <mirrors>
+            <mirror>
+                <id>aliyun</id>
+                <mirrorOf>central</mirrorOf>
+                <name>aliyun res</name>
+                <url>http://maven.aliyun.com/nexus/content/groups/public</url>
+            </mirror>
+        </mirrors>
+    4.idea配置本地maven:
+        1.File | Settings | Build, Execution, Deployment | Build Tools | Maven:
+            1.maven home directory改为maven解压目录
+            2.user setting files改为maven解压目录下conf目录下的settings文件；
+            3.Local repository改为本地仓库地址；
+    5.maven中的profile配置：
+
+    
+7.maven项目目录结构：
+    在maven项目中，项目的目录结构是约定好的，不能改变，即约定大于配置；
+    1.项目根目录
+        |--pom.xml：进行项目管理的配置文件；包括项目的坐标、项目的父子关系、依赖、构建目标等信息；
+        |--项目名.iml
+        |--src
+            |--main:主目录
+                |--java：java源文件
+                |--resources：配置文件(xml、properties、yml)
+            |--test:测试目录
+                |--java：java源文件
+                |--resource：测试资源文件
+
 8.maven的pom.xml文件：
     1.xml格式：<?xml version="1.0" encoding="UTF-8"?>
     2.所有的配置标签都要放置在<project></project>标签中；
-    3.项目坐标-gav:
-        <groupId>sslike.com</groupId>
-        <artifactId>mavenpro</artifactId>
-        <version>1.0-SNAPSHOT</version>
-        1.上述三个标签页称为项目的坐标；除此之外还会配置其他两种标签：
-            1.<type>：手动指定当前依赖的类型，默认为jar，也可以为war或者pom；
-            2.<scope>：定义依赖的作用范围：默认范围是compile，也可以取值为test、runtime、provided、system、import；
-                compile：表示当前依赖会参与项目的编译、测试、运行，打包时也会打进对应的包
-                test：表示当前依赖仅参与测试相关的内容，包括测试用的编译和执行；典型的比如junit；
-                runtime：表示当前依赖仅参与运行阶段，比如一些驱动程序一般不会用到；典型的比如jdbc相关类库，在编译时仅依赖相关接口；
-                provided：表示该依赖不参与打包过程，运行时需要的api由运行时环境提供，比如servletAPI等；主要是为了解决编译时的语法需求，但是运行时又其他容器提供的场景；
-                system：使用上跟provided基本相同；表示当前依赖不从maven仓库中获取；而是从本地文件系统中获取；
-                import：只在dependencyManagement中使用；解决maven单继承的问题；
-        2.被依赖的项目坐标必须放在dependencies中：
+    3.可配置内容：
+        1.项目坐标-gav:
+            <groupId>sslike.com</groupId>
+            <artifactId>mavenpro</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        2.依赖的包：
             <dependencies>
                 <dependency>
                     <groupId>项目groupId</groupId>
@@ -88,54 +102,66 @@
                     <version>版本号</version>
                 </dependency>
             </dependencies>
-    4.当前项目的打包形式：<package>pom|jar|war</package>
-    5.定义属性：<properties></properties>,通常可以在属性标签中定义一系列具体的属性值，比如版本号，然后在需要的地方通过${属性名}引用即可；如下示例：
-        <properties>
-            <pro.version>版本号</pro.version>
-        </properties>
-        在dependency中使用时以如下方式使用：
-        <dependencies>
-            <dependency>
-                <groupId></groupId>
-                <artifactId></artifactId>
-                <version>${pro.version}</version>
-            </dependency>
-        </dependencies>
+            1.除此之外<dependency>还会配置其他两种标签：
+                1.<type>：手动指定当前依赖的类型，默认为jar，也可以为war或者pom；
+                2.<scope>：定义依赖的作用范围：默认范围是compile，也可以取值为test、runtime、provided、system、import；
+                    compile：表示当前依赖会参与项目的编译、测试、运行，打包时也会打进对应的包
+                    test：表示当前依赖仅参与测试相关的内容，包括测试用的编译和执行；典型的比如junit；
+                    runtime：表示当前依赖仅参与运行阶段，比如一些驱动程序一般不会用到；典型的比如jdbc相关类库，在编译时仅依赖相关接口；
+                    provided：表示该依赖不参与打包过程，运行时需要的api由运行时环境提供，比如servletAPI等；主要是为了解决编译时的语法需求，但是运行时又其他容器提供的场景；
+                    system：使用上跟provided基本相同；表示当前依赖不从maven仓库中获取；而是从本地文件系统中获取；
+                    import：只在dependencyManagement中使用；解决maven单继承的问题；
+        
+        3.当前项目的打包形式：<packaging>pom|jar|war</packaging>
+        
+        4.定义属性：<properties></properties>,在属性标签中定义一系列具体的属性值，可以在需要的地方通过${属性名}引用即可；如下示例：
+            <properties>
+                <pro.version>版本号</pro.version>
+            </properties>
+            在dependency中使用时以如下方式使用：
+            <dependencies>
+                <dependency>
+                    <groupId></groupId>
+                    <artifactId></artifactId>
+                    <version>${pro.version}</version>
+                </dependency>
+            </dependencies>
 
 9.依赖传递原则：
-    1.关于依赖传递，maven会自动管理依赖的依赖；即依赖a又依赖于b，那么项目只需要配置依赖a的坐标即可，maven会自动添加依赖b的坐标，这种特性称为依赖传递；
-    2.依赖传递的原则：依赖传递跟scope有关，只会传递compile范围的依赖；即A依赖B，B依赖C，如果B依赖C时指定的scope不是compile的话，依赖C是不会传递给A的；
-    3.依赖排除：通过依赖排除可以禁止间接依赖的项目被依赖，比如A依赖B，B依赖C，A只想使用B依赖，不希望依赖C，此时可以通过在依赖B的配置中通过<exclusions></exclusions>来排除：
-        <dependencies>
-            <dependency>
-                <groupId>项目groupId</groupId>
-                <artifactId>模块</artifactId>
-                <version>版本号</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId></groupId>
-                        <artifactId></artifactId>
+    1.关于依赖传递：
+        1.maven会自动管理依赖的依赖；即项目如果既依赖a又依赖于b，而a也依赖于b，那么项目只需要配置依赖a的坐标即可，maven会自动添加依赖b的坐标，这种特性称为依赖传递；
+    2.依赖传递的原则：
+        1.就近原则：即路径最短者优先；示例：
+            pro->pro2->pro1
+            pro->pro3->pro4->pro1
+            对于pro1依赖会使用pro2->pro1这条路线的pro1;
+
+        2.声明者优先：如果路径相同，那么按照声明顺序引入依赖：
+            pro->pro2->pro1
+            pro->pro3->pro1
+            pro2的依赖声明的更早，所以会使用pro2->pro1这条路线的依赖；
+    3.依赖传递限制：
+        1.依赖传递跟scope有关，只会传递compile范围的依赖；即A依赖B，B依赖C，如果B依赖C时指定的scope不是compile的话，依赖C是不会传递给A的；
+    4.依赖查找仓库顺序：
+        1.依赖会先从本地仓库中查找，如果本地仓库没有，将会从远程仓库中查找，然后下载到本地仓库；
+        5.依赖排除：通过依赖排除可以禁止间接依赖的项目被依赖，比如A依赖B，B依赖C，A只想使用B依赖，不希望依赖C，此时可以通过在依赖B的配置中通过<exclusions></exclusions>来排除：
+            <dependencies>
+                <dependency>
+                    <groupId>项目groupId</groupId>
+                    <artifactId>模块</artifactId>
+                    <version>版本号</version>
+                    <exclusions>
+                        <exclusion>
+                            <groupId></groupId>
+                            <artifactId></artifactId>
+                        </exclusion>
                     </exclusion>
-                </exclusion>
-            </dependency>
-        </dependencies>
+                </dependency>
+            </dependencies>
 
-10.依赖原则：
-    1.就近原则：即路径最短者优先；示例：
-        pro->pro2->pro1
-        pro->pro3->pro4->pro1
-        对于pro1依赖会使用pro2->pro1这条路线的pro1;
-
-    2.声明者优先：如果路径相同，那么按照声明顺序引入依赖：
-        pro->pro2->pro1
-        pro->pro3->pro1
-        pro2的依赖声明的更早，所以会使用pro2->pro1这条路线的依赖；
-    3.依赖查找顺序：依赖会先从本地仓库中查找，如果本地仓库没有，将会从远程仓库中查找，然后下载到本地仓库；
-
-11.项目父子关系：
+10.项目父子关系：
     1.关于父子项目：
         1.父子项目通常不是项目之间的代码有继承关系，而是指通过父项目统一管理子项目的依赖；包装不同子项目中的依赖更加统一，管理更加方便；
-        2.父项目打包时通常都需要打包为pom；即<package>pom</package>
     
     2.对于父项目：
         1.一个项目下还有子项目，那么该项目就是一个父项目，父项目的作用通常只是用来管理多个子项目的依赖；父项目通常不会有src目录，只有pom.xml和项目名.iml文件；
@@ -168,7 +194,7 @@
                 <version>父项目版本号</version>
                 <relativePath>当前子项目相对于父项目pom的路径</relativePath>
             </parent>
-            子项目通常和父项目由相同的groupId,所以子项目本身通常不用再声明groupId;
+            子项目的gav坐标通常和父项目由相同的groupId,所以子项目本身通常不用再声明groupId;
 
         5.注意点：
             1.父项目中的dependencyManagment中声明的依赖并不会实际导入；在父项目中声明之后子项目如果需要使用某个依赖，还是需要通过dependency来声明：
@@ -180,39 +206,4 @@
                     </dependency>
                 </dependencies>
                 如果在子项目中又单独声明了版本号，那么将会依赖声明的版本，否则将使用父项目中的版本；
-            2.父项目也可以有自己的父项目，实现多重继承；
-    
-关于maven仓库：
-    1.maven分为两种仓库：本地仓库和远程仓库，区别在于是：本地仓库无需通过网络访问，就在本地文件系统；远程仓库需要通过网络访问；而所谓仓库本质上就是一个存放包的目录
-    2.关于本地仓库：
-        1.默认情况下的本地仓库在C:\Users\Administrator.USER-20181220ZV\.m2\repository位置；
-        2.自定义本地仓库位置需要编辑maven安装目录/conf/settings.xml/settings标签/localRepository中填写即可
-    3.关于远程仓库：
-        1.私服仓库：自己搭建的maven仓库
-        2.中央仓库：公共的maven远程仓库
-    4.maven查找依赖的路径：
-        1.本地仓库->远程仓库
-        2.如果远程仓库能够下载到相应的依赖包，将会把依赖包添加到本地仓库
-    5.设置远程仓库地址：
-        通过修改mmaven/settings配置文件：
-            <mirror>
-                <id>aliyun</id>
-                <mirrorOf>central</mirrorOf>
-                <name>aliyun res</name>
-                <url>http://maven.aliyun.com/nexus/content/groups/public</url>
-            </mirror>
-    
-关于maven的生命周期：
-    1.maven核心定义了三套互相独立的生命周期，生命周期中各个阶段的具体任务是插件来完成的；无论执行生命周期的那一段，都会从生命周期的最开始位置开始执行；
-    2.maven的三套生命周期分别是：
-        clean lifycycle：用来在项目构建之前执行一些清理工作；
-            1.pre-clena：清理之前做的工作
-            2.clean：执行清理工作
-            3.post-clean：执行完清理工作之后的一些事情
-        default lifeCycle：用来进行项目构建的核心部分，包括编译、测试、打包、安装、部署等，是最重要的一部分；
-            vaildate->compile->test->package->verify->install->deploy
-        site lifeCycle：用于生成项目报告、生成一个站点、发布站点；
-            pre-site
-            site
-            post-site
-            site-deploy：部署
+            2.父项目也可以有自己的父项目，实现多重继承；父项目的package必须配置为pom：<packaging>pom</packaging>
