@@ -31,3 +31,13 @@
             解码：
                 Base64 base64 = new Base64();
                 String decodeStr = new String(base64.decode(encodeStr),"UTF-8");
+
+2.URL编码解码处理：
+    1.URL编码：
+        1.类库：URLEncoder
+        2.处理方式：
+            String encodeStr = URLEncoder.encode(str,"UTF-8");
+    2.URL解码：
+        1.类库：URLDecoder
+        2.处理方式：
+            String decodeStr = URLDecoder.decode(encodeStr, "UTF-8");

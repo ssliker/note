@@ -41,5 +41,17 @@
             String hexStrng = DigestUtils.sha1Hex(str.getBytes("UTF-8"));
             String hexStrng = DigestUtils.sha256Hex(str.getBytes("UTF-8"));
             String hexStrng = DigestUtils.sha512Hex(str.getBytes("UTF-8"));
+
+3.uuid：
+    1.uuid表示时空中内容唯一的一段字符串；
+    2.uuid生成方案通常有四种：
+        1.基于时间生成的uuid：uuid的生成和时间、mac地址、随机数有关系；
+        2.基于DEC生成的uuid：算法和基于时间生成uuid的算法类似，但是会把表示时间的部分替换为POSIX的UID或GID；
+        3.基于命名种子生成的uuid：通过名字、名字的MD5值生成；相同名字种子在相同的运行环境中生成的MD5值是相同，不同的名字种子或者在不同的运行环境下生成的MD5值是不同的；
+        4.基于随机数生成的uuid：uuid的生成和随机数有关，有一定概率碰撞
+    3.使用uuid的方案推荐：
+        通常推荐使用第三中方案生成uuid；
+    4.java中生成uuid：
+        1.基于第三中方案：UUID.nameUUIDFromBytes(byte[] byteContent)    // 基于命名种子生成的uuid
+        2.基于第四种方案：UUID.randomUUID().toString()     // 基于随机数生成的uuid
     
-        
