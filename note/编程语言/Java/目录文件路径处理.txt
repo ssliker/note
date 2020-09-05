@@ -1,0 +1,61 @@
+1.关于目录文件路径处理：
+    1.目录文件处理是针对目录、文件、路径三个方面的处理；
+    2.Java中使用File来实现目录文件路径处理；
+    3.也可以使用apache Commons-io工具类处理
+
+2.使用File处理文件目录路径：
+
+    1.关于File对象创建：
+        1.通过一个路径创建：
+            File file = new File(String path)
+        2.通过两个路径拼接创建：
+            File file = new File(String path1, String path2)
+        3.通过File对象和路径拼接创建：
+            File file = new File(File parent, String child) 
+            File file = new File(String child, File parent)
+
+    2. 文件目录创建和删除操作：
+        1.目录创建：
+            单级目录创建：file.makedir()
+            多级目录创建：file.makedirs()
+        2.文件创建：
+            file.createNewFile()
+        3.空目录和文件删除：
+            file.delete()
+
+    3.文件目录权限管理：
+        设置只读属性：file.setReadOnly()
+        设置是否可读：file.setReadable()
+        设置是否可写：file.setWritable()
+        设置是否可执行：file.setExecutable()
+
+    4.文件目录检测类操作：
+        检测是否存在：file.exists()
+        检测是否绝对路径：file.isAbsolute()
+        检测是否文件：file.isFile()
+        检测是否目录：file.isDirectory()
+        检测是否隐藏文件：file.isHidden();
+        检测是否可读：file.canRead()
+        检测是否可写：file.canWrite()
+        检测是否可执行：file.canExecute()
+
+    5.目录列表获取：
+        返回字符串数组：String[] file.list()
+        返回File数组：File[] file.list()
+
+    6.文件大小获取：
+        file.lenth()
+
+    7.路径处理：
+        1.获取路径内容：file.getPath()
+        2.获取父路径：
+            1.返回父路径字符串：file.getParent()
+            2.返回父路径File对象：file.getFile()
+        3.获取文件目录名：file.getName()
+
+3.通过apache Commons-io实现文件目录处理：
+    apache Commons-io主要提供了以下功能：
+        1.文件拷贝：
+        2.目录拷贝：
+        3.文件移动：
+        4.目录移动：

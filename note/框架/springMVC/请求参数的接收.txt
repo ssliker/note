@@ -1,0 +1,35 @@
+接收策略：
+    1、如果没有请求实体，或者请求实体为form-data、x-www-form-urlencoded时采用@RequestParam或者形参接收参数；
+    2、如果有请求实体，并且请求实体为raw格式，则通过@RequestBody接收raw实体参数，通过形参或者@RequestParam接收查询字符串参数；
+    3.如果是请求路径参数，则通过@PathValue接收请求参数
+    4.尽量避免同名参数出现；如果同名参数出现不同接收方式、不同的参数类型都有不同的处理机制，需要区别对待
+
+策略详述：
+    1.@RequestParam接收请求参数：
+        1、@RequestParam只能接收form-data、x-www-form-urlencoded、查询字符串参数；不能接收raw实体参数；
+        2、@RequestParam只能通过两种方式接收参数：
+            1、通过map接收参数时：可以将form-data、x-www-form-urlencoded、查询字符串参数全部解析到map中；
+            2.通过单个变量接收参数时：可以按照参数名称的对应关系将参数解析到单个变量中，并且可以设置默认值以及是否必须传入参数；默认情况下并且要求声明的形参都必须要有参数传入，传入的参数只能多不能少；未声明的传入参数会被抛弃；
+        3.同名参数，不同的接收方式和不同的数据类型有不同的处理方式，要避免出现同名参数，防止混淆；
+
+    2.形参接收请求参数：
+        1.形参只能接收form-data、x-www-form-urlencoded、查询字符串参数；不能接收raw实体参数；
+        2.形参接收参数有两种方式:
+            1、通过单个变量接收参数时：可以按照参数名称一一解析到单个变量中；并且要求声明的形参都必须要有参数传入，传入的参数只能多不能少；未声明的传入参数会被抛弃；
+            2.通过bean接收参数时：可以将参数按照名称与bean的属性进行匹配传入bean中；如果匹配到的属性就赋值，没有匹配到的为零值；
+        3.无论哪种接收方式，实体与查询字符串都有同名参数时，String类型会解析到同一个参数中，并通过,分隔；尽量避免出现同名参数，防止出现参数混淆；
+
+    3.@RequestBody接收请求参数：
+        1.@ReuqestBody专用来接收请求实体为raw的请求；可以接收raw格式的请求实体；此时查询字符串参数只能通过单独声明@RequestParam或者形参接收；
+        2.@RequestBody接收请求参数根据参数的类型不同有两种方式：
+            1.如果参数时application/json，并且需要解析json，那么只能以以下两种方式接收：
+                1、通过map接收，要求类型必须是application/json；并且只会将实体中的参数解析到map中，查询字符串参数需要单独通过声明@RequestParam或者形参接收；
+                2、通过bean接收，要求类型必须是application/json，并且只会将实体中的参数解析到bean中，查询字符串参数需要单独通过声明@RequestParam或者形参接收；
+            3.如果参数不是application/json，如：application/xml/html/javascript、text/plain，或者不解析application/json时：
+                1、则只能通过String类型的变量来接收：
+
+    4.通过@PathVariable接收参数：
+        1、@PathVariable只能接收请求路径中的参数；
+        2、接收方式：
+            1.路径中必须先声明：@RequestMapping("/p1/{a}/{b}")
+            2.形参中必须要接收：public String tre(@PathVariable("a") String a, @PathVariable("b") int b)

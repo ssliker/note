@@ -207,3 +207,11 @@
                 </dependencies>
                 如果在子项目中又单独声明了版本号，那么将会依赖声明的版本，否则将使用父项目中的版本；
             2.父项目也可以有自己的父项目，实现多重继承；父项目的package必须配置为pom：<packaging>pom</packaging>
+
+11.关于maven的profile:
+    1.profile的意义在于：可以配置多个maven源以及其他信息，并根据不同的情况选择使用不同的配置；
+    2.profile可以配置的位置：1.settings.xml；2.pom.xml
+    3.关于settings中的profile：
+        1.当profile配置在settings中意味着该配置是全局的，会对所有使用该maven的项目产生作用；
+        2.可以定义的信息有：
+            <>
