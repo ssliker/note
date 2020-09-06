@@ -183,6 +183,39 @@
             2.此种比较方式会严格区分大小写比较，如果需要忽略大小写比较可以使用：string.compareToIgnoreCase()；
 
 5.String处理(apache commons lang:StringUtils):  
-    1.StringUtils用来处理String类型的对象；
-    
-    
+    1.空值判断：
+        1.isEmpty()：检测是否为null、或者字符串长度是否为0；
+        2.isNotEmpty()：检测是否不为null、或者字符串长度是否不为0；
+        3.isBlank()：检测是否为null、或者trim()之后字符串长度是否为0；
+        4.isNotBlank()：检测是否不为null、或者trim()之后字符串长度是否不为0；
+
+    2.类型判断：
+        isNumeric()：检测字符串是否是整数；检测之前需要先trim()去除两端空格；不能检测小数字符串；
+
+    3.去除空白字符和控制字符：
+        1.trim()：剔除空白字符以及控制字符，对于null返回null；
+        2.trimToEmpty()：剔除空白字符以及控制字符，对于null返回""；
+        3.trimToNull()：剔除空白字符以及控制字符，对于null返回null；
+        4.strip()：默认只剔除空白字符，不剔除控制字符，对于null返回null； 
+        5.stripToNull()：默认只剔除空白字符，不剔除控制字符，对于null返回null；
+        6.stripToEmpty()：默认只剔除空白字符，不剔除控制字符，对于null返回""；
+
+    4.是否包含：
+        1.contains(parentStr, childStr)：检测childStr是否包含在parentStr中，返回boolean值；
+        2.containsIgnoreCase(parentStr, childStr)：功能等同于contains，但是会忽略掉大小写；
+        3.containsAny(parentStr,childStr)：是否包含指定childStr；
+        4.containsNone(parentStr, childStr)：是否不包含指定childStr;
+        5.containsOnly(parentStr, childStr)：是否仅包含指定childStr；
+
+    5.截取子串：
+        1.left(str,len)：截取左侧3个字符返回；len小于0则设置为0；len超过str总长度设置为总长度；
+        2.right(str,len)：截取右侧3个字符返回；len小于0则设置为0；len超过str总长度设置为总长度；
+        3.mid(str,pos,len)：从pos位置截取len个字符返回；pos小于0，则设置为0，len小于0则设置为0，大于str总长度这设置为总长度；
+
+    6.字符串更新：
+        1.removeStart(String str,String remove)：如果字符串str是以remove开始，则去掉这个开始，然后返回，否则返回原来的串；
+        2.removeEnd(String str,String remove) 如果字符串str是以字符串remove结尾，则去掉这个结尾，然后返回，否则返回原来的串。
+        3.remove(String str,char remove) 去掉字符串str中所有包含remove的部分，然后返回；
+        4.overlay(str,newstr,start,end)：使用newstr替换掉str在start和end之间的字符串；
+        5.rightPad(String str,int size,String padStr)：将str使用padStr从右侧补齐为size长度的字符串
+        6.leftPad(String str,int size,String padStr)：将str使用padStr从左侧补齐为size长度的字符串
