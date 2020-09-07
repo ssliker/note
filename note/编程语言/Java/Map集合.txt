@@ -1,0 +1,49 @@
+1.关于Map:
+    1.用来存储k-v结构化数据的存储结构；
+    2.本质上是一个接口，定义了map部分公共操作；
+    3.底层实现类库：HashMap、LinkedHashMap、TreeMap、ConcurrentHashMap、HashTable;
+
+2.关于Map公共操作API：
+    1.添加元素：
+        put(k, v)
+        putAll(childMap)
+    2.获取元素：
+        get(k)
+        getOrDefault(k, v)
+    3.删除元素：
+        remove(k)
+        remove(k, v)
+    4.替换元素值：
+        replace(k, v)
+        replace(k, v, v)
+    5.检测元素：
+        containsKey(k)
+        containsValue(v)
+    6.获取元素个数：
+        size()
+    7.检测map是否为空：
+        isEmpty()
+    8.清空map:
+        clear()
+    9.获取所有的key:
+        keySet()
+    10.获取所有的value:
+        values()
+    11.遍历map:
+        1.通过entrySet()实现：
+            for(Map.Entry<String, Object> entry : map.entrySet()) {
+                //key: entry.getKey();
+                //value: entry.getValue();
+            }
+        2.通过ForEach实现：
+            map.forEach((k, v)->{
+                //key: k
+                //value: v
+            })
+        3.通过iterator实现：
+            Iterator iterator = map.entrySet().iterator();
+            while (iterator.hasNext()) {
+                Map.Entry<String, Object> entry = (Map.Entry<String, Object>)iterator.next();
+                //key: entry.getKey();
+                //value: entry.getValue();
+            }
