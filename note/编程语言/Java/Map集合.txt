@@ -3,7 +3,7 @@
     2.本质上是一个接口，定义了map部分公共操作；
     3.底层实现类库：HashMap、LinkedHashMap、TreeMap、ConcurrentHashMap、HashTable;
 
-2.关于Map公共操作API：
+2.Map基础操作API：
     1.添加元素：
         put(k, v)
         putAll(childMap)
@@ -29,6 +29,27 @@
         keySet()
     10.获取所有的value:
         values()
+    11.计算并返回新值：
+        compute(key, BiFunction);
+        功能描述：对map中key对应的value按照bitfunction的计算规则进行计算，然后将计算结果设置给该key，BitFunction必须返回一个类型相符的值；
+        使用示例：
+            HashMap<String, Integer> m = new HashMap<>();
+            m.put("tom",23);
+            m.put("lili",22);
+            m.compute("tom",(k, v)->{
+                //k：tom
+                //v：23
+                if( null == v ) {
+                    return 0;
+                }else{
+                    v = v + 10;
+                }
+                return v;
+            });
+            //{tom=33, lili=22}
+        
+    12.分组合并
+        merge()
     11.遍历map:
         1.通过entrySet()实现：
             for(Map.Entry<String, Object> entry : map.entrySet()) {
@@ -47,3 +68,4 @@
                 //key: entry.getKey();
                 //value: entry.getValue();
             }
+3.HashMap特有API:

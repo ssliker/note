@@ -1,0 +1,162 @@
+1，mybatis与spring框架融合：
+    1.DAO模式开发：
+        1.xml方式配置：
+            公共配置：
+                1.在resources目录下添加：
+                    1.mybatis-config.xml
+                    2.mapper-config.xml
+
+                2.配置数据源：
+                    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+                        <property name="driverClassName" value="${database.driver}"></property>
+                        <property name="url" value="${database.url}"></property>
+                        <property name="username" value="${database.username}"></property>
+                        <property name="password" value="${database.password}"></property>
+                    </bean>
+                
+                3.创建sqlSessionFactory：
+                    <bean class="org.mybatis.spring.SqlSessionFactoryBean" id="sqlSessionFactory">
+                        <property name="configLocation" value="mybatis-config.xml"></property>
+                        <property name="dataSource" ref="dataSource"></property>
+                    </bean>
+
+            mybatis与spring框架融合：
+                1.通过SqlSessionDaoSupport进行融合：
+                    1.操作数据库的DAO层直接继承SqlSessionDaoSupport
+                        public class DaoImpl extends SqlSessionDaoSupport {
+                            public DaoImpl (SqlSeesionFactory sqlSessionFactory) {
+                                setSqlSessionFactory(sqlSessionFactory);
+                            }
+                        }
+
+                    2.将sqlSessionFactory注入进Dao中：
+                        <bean class="com.sslike.mybatis.dao.DaoImpl">
+                            <constructor-arg name="sqlSessionFactory" ref="sqlSessionFactory"></constructor-arg>
+                        </bean>
+                    
+                    3.在DaoImpl中可以通过调用getSqlSession获取sqlSession执行mybatis提供的java API:
+                        SqlSession sqlSession  = this.getSqlSession();
+                        sqlSession.selectOne("sqlId",param);
+                    
+                2.通过SqlSessionTemplate进行融合：
+                    1.操作数据库的DAO层直接继承SqlSessionTemplate：
+                        public class DaoImpl extends SqlSessionTemplate {
+                            public DaoImpl (SqlSeesionFactory sqlSessionFactory) {
+                                super(sqlSessionFactory)
+                            }
+                        }
+                    
+                    2.将sqlSessionFactory通过构造函数注入进Dao中：
+                        <bean class="com.sslike.mybatis.dao.DaoImpl">
+                            <constructor-arg name="sqlSessionFactory" ref="sqlSessionFactory"></constructor-arg>
+                        </bean>
+                    
+                    3.在DaoImpl中可以直接调用mybatis提供的java API：
+                        this.selectOne("sqlId",param);
+                
+                3.通过直接注入SqlSessionTemplate进行融合：
+                    1.直接创建SqlSessionTemplate：
+                        <bean class="org.mybatis.spring.SqlSessionTemplate" id="sqlSessionTemplate">
+                            <constructor-arg name="sqlSessionFactory" ref="sqlSessionFactory"></constructor-arg>
+                        </bean>
+                    
+                    2.将SqlSessionTemplate注入进类中调用mybatis提供的java API:
+                        public class DaoImpl {
+
+                            @Autowired
+                            private SqlSessionTemplate sqlSession;
+
+                            public void fun() {
+                                sqlSession.selectOne("sqlId",param);
+                            }
+                        }
+        2.通过Configuration注解形式融合：
+            1.创建数据源：
+                1.对于spring/springMVC项目：
+                    @Bean("dataSource")
+                    public DataSource getDataSource() {
+                        DriverManagerDataSource dataSource = new DriverManagerDataSource();
+                        dataSource.setDriverClassName("com.mysql.jdbc.Driver");
+                        dataSource.setUrl("jdbc:mysql://122.51.198.228:3306/test");
+                        dataSource.setUsername("root");
+                        dataSource.setPassword("123456");
+                        return dataSource;
+                    }
+                2.对于springBoot项目：
+                    1.第一种方式：
+                        @Bean("dataSource")
+                        public DataSource getDataSource() {
+                            DataSource dataSource = DataSourceBuilder.create()
+                                    .driverClassName("com.mysql.cj.jdbc.Driver")
+                                    .url("jdbc:mysql://122.51.198.228:3306/test")
+                                    .username("root")
+                                    .password("123456")
+                                    .build();
+                            return dataSource;
+                        }
+                    2.第二种方式：
+                        1.application.yml中配置连接信息：
+                            spring:
+                                datasource:
+                                    t1:
+                                        driver-class-name: com.mysql.cj.jdbc.Driver
+                                        jdbc-url: jdbc:mysql://122.51.198.228:3306/test    #特别注意：如果是直接注入DataSourceBuilder，此处应该为jdbc-url而不是url；
+                                        username: root
+                                        password: 123456
+                        2.将配置注入DataSourceBuilder：
+                            @Bean("dataSource")
+                            @ConfigurationProperties(prefix = "spring.datasource.t1")
+                            public DataSource getDataSource() {
+                                DataSource dataSource = DataSourceBuilder.create().build();
+                                return dataSource;
+                            }
+
+            2.创建SqlSessionFactory：
+                @Bean("sqlSessionFactory")
+                public SqlSessionFactoryBean getSqlSessionFactoryBean(@Qualifier("dataSource") DataSource ds) {
+                    SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
+                    sqlSessionFactoryBean.setDataSource(ds);
+                    PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+                    Resource res = resolver.getResource("classpath:mapper/firm.xml");
+                    sqlSessionFactoryBean.setMapperLocations(res);
+                    return sqlSessionFactoryBean;
+                }
+            
+            3.创建SqlSessionTemplate:
+                @Bean("sqlSessionTemplate")
+                public SqlSessionTemplate getSqlSessionTemplate(@Qualifier("sqlSessionFactory") SqlSessionFactory sqlSessionFactory) {
+                    SqlSessionTemplate sqlSessionTemplate = new SqlSessionTemplate(sqlSessionFactory);
+                    return sqlSessionTemplate;
+                }
+            
+            4.使用sqlSessionTemplate:
+                1.将SqlSessionTemplate注入到DAO中：
+                    @Autowired
+                    SqlSessionTemplate sqlSessionTemplate;
+            
+                2.调用mybatis API执行sql:
+                    sqlSessionTemplate.selectOne("sqlId",param);
+                
+    2.使用Mapper模式开发：
+        1.xml配置：
+            1.配置DataSource、SqlSessionFactory、SqlSessionTemplate：和上述xml中配置DataSource、SqlSessionFactory、SqlSessionTemplate完全相同；
+            2.配置MapperScannerConfigurer:
+                <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+                    <property name="basePackage" value="com.sslike.mybatis.mapper"></property>
+                    <property name="sqlSessionTemplateBeanName" value="sqlSessionTemplate"></property>
+                </bean>
+            3.注意事项：
+                1.特别注意第一步中mapper-config中的mapper标签中配置的mapper-locations的位置路径不能出错；
+
+        2.Configuration+注解配置：
+            1.配置DataSource、SqlSessionFactory、SqlSessionTemplate：和上述Configuration+注解中配置DataSource、SqlSessionFactory、SqlSessionTemplate完全相同；
+            2.配置MapperScannerConfigurer:
+                @Bean
+                public MapperScannerConfigurer getMapperScan() {
+                    MapperScannerConfigurer mapperScannerConfigurer = new MapperScannerConfigurer();
+                    mapperScannerConfigurer.setSqlSessionTemplateBeanName("t1SqlSessionTemplate");
+                    mapperScannerConfigurer.setBasePackage("com.ssliker.mybatisda.mapper");
+                    return mapperScannerConfigurer;
+                }
+            3.注意事项：
+                1.特别注意第一步中SqlSessionFactory中配置的mapper-locations的位置路径不能出错；
