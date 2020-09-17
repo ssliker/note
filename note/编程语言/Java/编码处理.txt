@@ -1,14 +1,14 @@
 1.Base64编码处理：
     1.jdk7以前的处理方式：
         1.处理类：
-            1.Base64Encoder：进行编码
-            2.Base64Decoder：进行解码
+            1.BASE64Encoder：进行编码
+            2.BASE64Decoder：进行解码
         2.处理流程：
             编码：
-                Base64Encoder encoder = new Base64Encoder();
+                BASEEncoder encoder = new BASE64Encoder();
                 String encodeStr = encoder.encode(str.getBytes("UTF-8"));
             解码：
-                Base64Decoder decoder = new Base64Decoder();
+                BASE64Decoder decoder = new BASE64Decoder();
                 String decodeStr = new String(decoder.decodeBuffer(encodeStr),"UTF-8");
     2.jdk8以后的处理方式：
         1.处理类：
@@ -27,7 +27,7 @@
         2.处理流程：
             编码:
                 Base64 base64 = new Base64();
-                String encodeStr = base64.encodeToString(str.getBytes("UTF-8"));
+                String encodeStr = base64.encodeAsString(str.getBytes("UTF-8"));
             解码：
                 Base64 base64 = new Base64();
                 String decodeStr = new String(base64.decode(encodeStr),"UTF-8");
